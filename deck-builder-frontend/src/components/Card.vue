@@ -20,11 +20,12 @@
 
     <div class="action-btns">
       <b-button block
-                v-if="events.includes('select')">Use</b-button>
+                @click="$emit('select-card')"
+                v-if="events.includes('select')">Select</b-button>
       <b-button block
                 v-if="events.includes('moreInfo')">Info</b-button>
       <b-button block
-                v-if="events.includes('deselect')">Deselect</b-button>
+                v-if="events.includes('remove')">Remove</b-button>
       <b-button block
                 v-if="events.includes('upgrade')">Upgrade</b-button>
     </div>

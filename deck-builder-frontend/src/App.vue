@@ -1,12 +1,15 @@
 <template>
   <div class="deck-builder">
     <battle-deck :data="battleDeck"
+                 @select-card="openCardsCollection($event)"
                  @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
 
     <card-collection :data="cardsCollection" />
 
-    <cards-modal :cards="cardsCollection"
-                 :cards-rarities="cardsRarities" />
+    <cards-modal :show-collections="showCardsModal"
+                 :cards="cardsCollection"
+                 :cards-rarities="cardsRarities"
+                 @hide-collections-modal="showCardsModal = false" />
   </div>
 </template>
 
@@ -30,7 +33,8 @@ export default {
       cardsCollection: [],
       cardsRarities: [],
       battleDeck: [],
-      deckCardsMaxCount: 8
+      deckCardsMaxCount: 8,
+      showCardsModal: false
     };
   },
 
@@ -87,6 +91,11 @@ export default {
           cardsCollection.splice(randomIdx, 1);
         }
       }
+    },
+
+    openCardsCollection: function(cardIdx) {
+      this.showCardsModal = true;
+      console.log(cardIdx);
     }
   }
 };

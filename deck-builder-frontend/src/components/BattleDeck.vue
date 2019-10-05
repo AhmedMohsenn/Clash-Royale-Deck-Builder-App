@@ -13,6 +13,7 @@
            v-bind:key="idx"
            class="card">
         <card :card="card"
+              @select-card="$emit('select-card', idx)"
               :handle-click-action="clickOnDeckCard" />
       </div>
     </div>
@@ -36,10 +37,13 @@ export default {
       if (card === null) {
         clickTypes = ["select"];
       } else {
-        clickTypes = ["deselect", "moreInfo", "upgrade"];
+        clickTypes = ["remove", "moreInfo", "upgrade"];
       }
       return clickTypes;
     }
+    // test: function() {
+    //   this.
+    // }
   }
 };
 </script>
