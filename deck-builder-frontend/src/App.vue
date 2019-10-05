@@ -1,37 +1,51 @@
 <template>
-  <div class="card-wrapper">
-    <div v-for="card of cardsCollection"
-         v-bind:key="card.id"
-         class="card">
-      <deck-card :card="card" />
-    </div>
+  <div class="deck-builder">
+    <battle-deck :data="battleDeck"
+                 @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
+
+    <card-collection :data="cardsCollection" />
+
+    <cards-modal :cards="cardsCollection"
+                 :cards-rarities="cardsRarities" />
   </div>
 </template>
 
 <script>
 import { Card } from "@/models/Card.js";
 import CardService from "@/services/Card.js";
-import DeckCard from "@/components/Card.vue";
-
+import CardsModal from "@/components/CardsModal.vue";
+import BattleDeck from "@/components/BattleDeck.vue";
+import CardCollection from "@/components/CardCollection.vue";
 export default {
   name: "app",
 
   components: {
-    DeckCard
+    CardsModal,
+    CardCollection,
+    BattleDeck
   },
 
   data() {
     return {
       cardsCollection: [],
-      cardsRarities: []
+      cardsRarities: [],
+      battleDeck: [],
+      deckCardsMaxCount: 8
     };
   },
 
   created() {
+    this.initializeBattleDeck();
     this.initializeCardsCollection();
   },
 
   methods: {
+    initializeBattleDeck: function() {
+      for (let i = 0; i < this.deckCardsMaxCount; i++) {
+        this.battleDeck.push(null);
+      }
+    },
+
     initializeCardsCollection: function() {
       CardService.getAllCards()
         .then(response => {
@@ -53,22 +67,64 @@ export default {
         }
       }
       return cardsRarities;
+    },
+
+    resetBattleDeck: function() {
+      for (const card of this.battleDeck) {
+        if (card) this.cardsCollection.push(card);
+      }
+      this.battleDeck = [];
+    },
+
+    generateRandomDeck: function(cardsCollection, deckCardsCount) {
+      this.resetBattleDeck();
+      while (this.battleDeck.length < deckCardsCount) {
+        const randomIdx = Math.floor(Math.random() * cardsCollection.length);
+        const currentCard = cardsCollection[randomIdx];
+        const found = this.battleDeck.find(d => d.id === currentCard.id);
+        if (!found) {
+          this.battleDeck.push(currentCard);
+          cardsCollection.splice(randomIdx, 1);
+        }
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-.card-wrapper {
+.deck-builder {
+  padding-left: 30%;
+  padding-right: 30%;
+}
+
+.battle-deck {
+  margin-bottom: 1%;
+}
+
+.battle-deck-header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.random-deck-btn {
+  color: grey;
+  margin: auto 0;
+}
+
+.random-deck-btn:hover {
+  cursor: pointer;
+}
+
+.card-collection-wrapper {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  padding-left: 20%;
-  padding-right: 20%;
 }
 
 .card {
-  flex-basis: 24%;
+  flex-basis: 22%;
   margin-top: 2%;
   border: none;
 }
