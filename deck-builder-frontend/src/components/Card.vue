@@ -20,9 +20,6 @@
 
     <div class="action-btns">
       <b-button block
-                @click="$emit('select-card')"
-                v-if="events.includes('select')">Select</b-button>
-      <b-button block
                 v-if="events.includes('moreInfo')">Info</b-button>
       <b-button block
                 v-if="events.includes('remove')">Remove</b-button>
@@ -53,7 +50,7 @@ export default {
 
   computed: {
     isEmpty: function() {
-      return this.card === null;
+      return !this.card;
     }
   },
 
@@ -66,6 +63,18 @@ export default {
     },
     clearEvents: function() {
       this.events = [];
+    }
+  },
+
+  watch: {
+    events: {
+      immediate: true,
+      handler: function(newEvents) {
+        const hasSelectEvent = newEvents.includes("select");
+        const hasUseEvent = newEvents.includes("use");
+        if (hasSelectEvent) this.$emit("select-mode");
+        else if (hasUseEvent) this.$emit("use-card", this.card);
+      }
     }
   },
 
@@ -87,7 +96,7 @@ export default {
 .card,
 .card > img {
   width: 100%;
-  height: 10rem;
+  height: 100%;
 }
 
 .card__elixir {

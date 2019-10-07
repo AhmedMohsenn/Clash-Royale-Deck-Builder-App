@@ -4,7 +4,7 @@
     <div class="card-collection-wrapper">
       <div v-for="card of data"
            v-bind:key="card.id"
-           class="card">
+           class="cards-wrapper">
         <card :card="card"
               :handle-click-action="clickOnCollectionCard" />
       </div>
@@ -36,9 +36,10 @@ export default {
   justify-content: space-between;
 }
 
-.card {
+.cards-wrapper {
   flex-basis: 22%;
   margin-top: 2%;
   border: none;
+  height: 10rem;
 }
 </style>

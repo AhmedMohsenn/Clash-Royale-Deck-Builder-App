@@ -1,7 +1,7 @@
 <template>
   <div class="deck-builder">
     <battle-deck :data="battleDeck"
-                 @select-card="openCardsCollection($event)"
+                 @select-mode="openCardsCollection($event)"
                  @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
 
     <card-collection :data="cardsCollection" />
@@ -9,6 +9,7 @@
     <cards-modal :show-collections="showCardsModal"
                  :cards="cardsCollection"
                  :cards-rarities="cardsRarities"
+                 @use-card="useCard($event)"
                  @hide-collections-modal="showCardsModal = false" />
   </div>
 </template>
@@ -34,7 +35,8 @@ export default {
       cardsRarities: [],
       battleDeck: [],
       deckCardsMaxCount: 8,
-      showCardsModal: false
+      showCardsModal: false,
+      currentBattleDeckSlotIdx: null
     };
   },
 
@@ -94,8 +96,18 @@ export default {
     },
 
     openCardsCollection: function(cardIdx) {
+      this.currentBattleDeckSlotIdx = cardIdx;
       this.showCardsModal = true;
-      console.log(cardIdx);
+    },
+
+    useCard(chosenCard) {
+      this.$set(this.battleDeck, this.currentBattleDeckSlotIdx, chosenCard);
+      this.removeCardFromCardCollection(chosenCard);
+      this.showCardsModal = false;
+    },
+
+    removeCardFromCardCollection: function(card) {
+      this.cardsCollection = this.cardsCollection.filter(c => c.id !== card.id);
     }
   }
 };

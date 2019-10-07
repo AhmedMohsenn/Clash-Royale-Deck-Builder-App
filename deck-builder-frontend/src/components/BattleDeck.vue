@@ -11,9 +11,9 @@
     <div class="battle-deck-wrapper">
       <div v-for="(card, idx) of data"
            v-bind:key="idx"
-           class="card">
+           class="cards-wrapper">
         <card :card="card"
-              @select-card="$emit('select-card', idx)"
+              @select-mode="$emit('select-mode', idx)"
               :handle-click-action="clickOnDeckCard" />
       </div>
     </div>
@@ -34,16 +34,13 @@ export default {
     },
     clickOnDeckCard: function(card) {
       let clickTypes = [];
-      if (card === null) {
+      if (!card) {
         clickTypes = ["select"];
       } else {
         clickTypes = ["remove", "moreInfo", "upgrade"];
       }
       return clickTypes;
     }
-    // test: function() {
-    //   this.
-    // }
   }
 };
 </script>
@@ -74,9 +71,10 @@ export default {
   justify-content: space-between;
 }
 
-.card {
+.cards-wrapper {
   flex-basis: 22%;
   margin-top: 2%;
   border: none;
+  height: 10rem;
 }
 </style>
