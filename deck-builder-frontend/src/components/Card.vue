@@ -18,14 +18,13 @@
       <p>{{ card.elixirCost }}</p>
     </div>
 
-    <div class="action-btns">
-      <b-button block
-                v-if="events.includes('moreInfo')">Info</b-button>
-      <b-button block
+    <b-button-group vertical
+                    class="action-btns">
+      <b-button v-if="events.includes('moreInfo')">Info</b-button>
+      <b-button @click="$emit('remove-mode')"
                 v-if="events.includes('remove')">Remove</b-button>
-      <b-button block
-                v-if="events.includes('upgrade')">Upgrade</b-button>
-    </div>
+      <b-button v-if="events.includes('upgrade')">Upgrade</b-button>
+    </b-button-group>
   </div>
 </template>
 
@@ -136,5 +135,6 @@ export default {
 
 .action-btns > button {
   margin: 0;
+  font-size: 0.9rem;
 }
 </style>

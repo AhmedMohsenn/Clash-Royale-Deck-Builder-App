@@ -2,6 +2,7 @@
   <div class="deck-builder">
     <battle-deck :data="battleDeck"
                  @select-mode="openCardsCollection($event)"
+                 @remove-mode="removeCardFromBattleDeck($event)"
                  @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
 
     <card-collection :data="cardsCollection" />
@@ -22,7 +23,6 @@ import BattleDeck from "@/components/BattleDeck.vue";
 import CardCollection from "@/components/CardCollection.vue";
 export default {
   name: "app",
-
   components: {
     CardsModal,
     CardCollection,
@@ -108,6 +108,12 @@ export default {
 
     removeCardFromCardCollection: function(card) {
       this.cardsCollection = this.cardsCollection.filter(c => c.id !== card.id);
+    },
+
+    removeCardFromBattleDeck: function(cardIdx) {
+      const currentCard = this.battleDeck[cardIdx];
+      this.$set(this.battleDeck, cardIdx, null);
+      this.cardsCollection.push(currentCard);
     }
   }
 };

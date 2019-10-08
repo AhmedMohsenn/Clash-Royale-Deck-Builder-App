@@ -3,7 +3,6 @@
            size="lg"
            hide-footer
            title="Select Card"
-           @show="currentCards = getCardsByRarity(cards, cardsRarities[0])"
            @hide="$emit('hide-collections-modal')">
 
     <b-tabs>
@@ -55,6 +54,7 @@ export default {
   watch: {
     showCollections: function(value) {
       if (value) {
+        this.getCardsByRarity(this.cards, this.cardsRarities[0]);
         this.$bvModal.show("cards-modal");
       } else {
         this.$bvModal.hide("cards-modal");

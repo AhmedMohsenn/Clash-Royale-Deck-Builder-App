@@ -5,7 +5,7 @@
       <font-awesome-icon icon="random"
                          class="random-deck-btn"
                          size="lg"
-                         @click="generateRandomDeck" />
+                         @click="$emit('generate-random-deck')" />
     </div>
 
     <div class="battle-deck-wrapper">
@@ -13,6 +13,7 @@
            v-bind:key="idx"
            class="cards-wrapper">
         <card :card="card"
+              @remove-mode="$emit('remove-mode', idx)"
               @select-mode="$emit('select-mode', idx)"
               :handle-click-action="clickOnDeckCard" />
       </div>
@@ -29,9 +30,6 @@ export default {
     data: Array
   },
   methods: {
-    generateRandomDeck: function() {
-      this.$emit("generate-random-deck");
-    },
     clickOnDeckCard: function(card) {
       let clickTypes = [];
       if (!card) {
