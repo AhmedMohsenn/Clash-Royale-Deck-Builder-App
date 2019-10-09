@@ -1,17 +1,19 @@
 <template>
   <div class="card"
        v-click-outside="clearEvents"
-       @click="getPossibleEvents()"
        :class="{'empty-card' : isEmpty}">
 
-    <font-awesome-icon icon="plus"
-                       v-if="isEmpty"
-                       class="add-card-icon"
-                       size="sm" />
+    <div class="card-image"
+         @click="getPossibleEvents()">
+      <font-awesome-icon icon="plus"
+                         v-if="isEmpty"
+                         class="add-card-icon"
+                         size="sm" />
 
-    <img v-if="!isEmpty"
-         :src="getCardImage(card)"
-         alt="card image" />
+      <img v-else
+           :src="getCardImage(card)"
+           alt="card image" />
+    </div>
 
     <div v-if="!isEmpty"
          class="card__elixir">
@@ -21,7 +23,7 @@
     <b-button-group vertical
                     class="action-btns">
       <b-button v-if="events.includes('moreInfo')">Info</b-button>
-      <b-button @click="$emit('remove-mode')"
+      <b-button @click="emitEvent('remove-mode')"
                 v-if="events.includes('remove')">Remove</b-button>
       <b-button v-if="events.includes('upgrade')">Upgrade</b-button>
     </b-button-group>
@@ -32,12 +34,8 @@
 import ClickOutside from "vue-click-outside";
 export default {
   props: {
-    card: {
-      type: Object
-    },
-    handleClickAction: {
-      type: Function
-    }
+    card: Object,
+    handleClickAction: Function
   },
 
   data() {
@@ -62,6 +60,10 @@ export default {
     },
     clearEvents: function() {
       this.events = [];
+    },
+    emitEvent: function(event, data = null) {
+      this.$emit(event, data);
+      this.clearEvents();
     }
   },
 
@@ -71,8 +73,8 @@ export default {
       handler: function(newEvents) {
         const hasSelectEvent = newEvents.includes("select");
         const hasUseEvent = newEvents.includes("use");
-        if (hasSelectEvent) this.$emit("select-mode");
-        else if (hasUseEvent) this.$emit("use-card", this.card);
+        if (hasSelectEvent) this.emitEvent("select-mode");
+        else if (hasUseEvent) this.emitEvent("use-card", this.card);
       }
     }
   },
@@ -93,7 +95,8 @@ export default {
 }
 
 .card,
-.card > img {
+.card-image,
+.card-image > img {
   width: 100%;
   height: 100%;
 }
@@ -119,7 +122,8 @@ export default {
   margin: auto;
   color: grey;
   width: 50px;
-  height: 100px;
+  display: block;
+  height: 100%;
 }
 
 .action-btns {

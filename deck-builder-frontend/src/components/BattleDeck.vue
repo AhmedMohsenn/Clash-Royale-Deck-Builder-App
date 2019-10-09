@@ -73,6 +73,6 @@ export default {
   flex-basis: 22%;
   margin-top: 2%;
   border: none;
-  height: 10rem;
+  height: 9rem;
 }
 </style>
