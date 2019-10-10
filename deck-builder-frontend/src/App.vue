@@ -12,16 +12,40 @@
     </div>
 
     <div class="deck-statistics">
-      <h6>Average Elixir Cost</h6>
-      <b-progress :value="getAverageElixirCost"
+      <h6 class="distribution-label">Average Elixir Cost</h6>
+      <b-progress height="1.3rem"
+                  :value="getAverageElixirCost"
                   :max="getMaxCardByElixir"
                   :precision="1"
                   show-value></b-progress>
-                  
-      <h6>Minimum Cycle Cost </h6>
-      <b-progress :value="getMinCycleCost"
+
+      <h6 class="distribution-label">Minimum Cycle Cost </h6>
+      <b-progress height="1.3rem"
+                  :value="getMinCycleCost"
                   :max="getMaxCardByElixir * 4"
                   show-value></b-progress>
+
+      <h6 class="distribution-label">Card Types</h6>
+      <b-progress height="2rem"
+                  :max="deckCardsMaxCount">
+        <b-progress-bar v-for="(d, idx) of getCardsTypesDistribution"
+                        v-bind:key="d.type"
+                        :value="d.typeCount"
+                        :variant="progressBarColor[idx]">
+          {{d.typeCount}} {{d.type}}
+        </b-progress-bar>
+      </b-progress>
+
+      <h6 class="distribution-label">Card Rarities</h6>
+      <b-progress height="2rem"
+                  :max="deckCardsMaxCount">
+        <b-progress-bar v-for="(d, idx) of getCardsRaritiesDistribution"
+                        v-bind:key="d.rarity"
+                        :value="d.rarityCount"
+                        :variant="progressBarColor[idx]">
+          {{d.rarityCount}} {{d.rarity}}
+        </b-progress-bar>
+      </b-progress>
     </div>
 
     <cards-modal :show-collections="showCardsModal"
@@ -53,7 +77,8 @@ export default {
       battleDeck: [],
       deckCardsMaxCount: 8,
       showCardsModal: false,
-      currentBattleDeckSlotIdx: null
+      currentBattleDeckSlotIdx: null,
+      progressBarColor: ["success", "info", "warning", "danger", "primary", "secondary", "dark"]
     };
   },
 
@@ -95,6 +120,24 @@ export default {
         if (battleDeckCopy[i]) cost += battleDeckCopy[i].elixirCost;
       }
       return cost;
+    },
+    getCardsTypesDistribution: function() {
+      const distribution = [];
+      const cardsTypes = this.getCardsTypes(this.cardsCollection);
+      cardsTypes.forEach(type => {
+        const typeCount = this.battleDeck.filter(c => c && c.type === type).length;
+        distribution.push({ type, typeCount });
+      });
+      return distribution;
+    },
+    getCardsRaritiesDistribution: function() {
+      const distribution = [];
+      const cardsRarities = this.getCardsRarities(this.cardsCollection);
+      cardsRarities.forEach(rarity => {
+        const rarityCount = this.battleDeck.filter(c => c && c.rarity === rarity).length;
+        distribution.push({ rarity, rarityCount });
+      });
+      return distribution;
     }
   },
 
@@ -131,6 +174,16 @@ export default {
         }
       }
       return cardsRarities;
+    },
+
+    getCardsTypes: function(cards) {
+      const cardsTypes = [];
+      for (const card of cards) {
+        if (!cardsTypes.includes(card.type)) {
+          cardsTypes.push(card.type);
+        }
+      }
+      return cardsTypes;
     },
 
     resetBattleDeck: function() {
@@ -179,7 +232,7 @@ export default {
 
 <style scoped>
 .deck-builder {
-  padding-left: 30%;
+  padding-left: 20%;
   padding-right: 5%;
   display: flex;
   flex-flow: row nowrap;
@@ -187,11 +240,11 @@ export default {
 }
 
 .battle-deck-wrapper {
-  flex-basis: 70%;
+  flex-basis: 50%;
 }
 
 .deck-statistics {
-  flex-basis: 25%;
+  flex-basis: 40%;
   margin-top: 4%;
 }
 
@@ -224,6 +277,10 @@ export default {
   flex-basis: 22%;
   margin-top: 2%;
   border: none;
+}
+
+.distribution-label {
+  font-size: 0.9rem;
 }
 </style>
 
