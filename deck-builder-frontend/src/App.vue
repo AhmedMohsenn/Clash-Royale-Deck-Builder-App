@@ -1,11 +1,28 @@
 <template>
   <div class="deck-builder">
-    <battle-deck :data="battleDeck"
-                 @select-mode="openCardsCollection($event)"
-                 @remove-mode="removeCardFromBattleDeck($event)"
-                 @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
+    <div class="battle-deck-wrapper">
 
-    <card-collection :data="cardsCollection" />
+      <battle-deck :data="battleDeck"
+                   @select-mode="openCardsCollection($event)"
+                   @remove-mode="removeCardFromBattleDeck($event)"
+                   @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
+
+      <card-collection :data="cardsCollection" />
+
+    </div>
+
+    <div class="deck-statistics">
+      <h6>Average Elixir Cost</h6>
+      <b-progress :value="getAverageElixirCost"
+                  :max="getMaxCardByElixir"
+                  :precision="1"
+                  show-value></b-progress>
+                  
+      <h6>Minimum Cycle Cost </h6>
+      <b-progress :value="getMinCycleCost"
+                  :max="getMaxCardByElixir * 4"
+                  show-value></b-progress>
+    </div>
 
     <cards-modal :show-collections="showCardsModal"
                  :cards="cardsCollection"
@@ -38,6 +55,47 @@ export default {
       showCardsModal: false,
       currentBattleDeckSlotIdx: null
     };
+  },
+
+  computed: {
+    getMaxCardByElixir: function() {
+      const maxElixir = this.cardsCollection.reduce((acc, card) => {
+        return card ? Math.max(acc, Number(card.elixirCost)) : acc;
+      }, 0);
+      return maxElixir;
+    },
+    getNumberofCardsInBattleDeck: function() {
+      const numberOfCards = this.battleDeck.reduce((acc, card) => {
+        return card ? acc + 1 : acc;
+      }, 0);
+      return numberOfCards;
+    },
+    getTotalSumOfElixirInBattleDeck: function() {
+      const sum = this.battleDeck.reduce((acc, card) => {
+        return card ? acc + card.elixirCost : acc;
+      }, 0);
+      return sum;
+    },
+    getAverageElixirCost: function() {
+      if (this.getNumberofCardsInBattleDeck === 0) return 0;
+      return this.getTotalSumOfElixirInBattleDeck / this.getNumberofCardsInBattleDeck;
+    },
+    getMinCycleCost: function() {
+      const battleDeckCopy = [...this.battleDeck];
+      battleDeckCopy.sort(function(c1, c2) {
+        if (!c1) return 1;
+        if (!c2) return -1;
+        if (c1.elixirCost < c2.elixirCost) return -1;
+        if (c1.elixirCost > c2.elixirCost) return 1;
+        return 0;
+      });
+
+      let cost = 0;
+      for (let i = 0; i < 4; i++) {
+        if (battleDeckCopy[i]) cost += battleDeckCopy[i].elixirCost;
+      }
+      return cost;
+    }
   },
 
   created() {
@@ -122,7 +180,19 @@ export default {
 <style scoped>
 .deck-builder {
   padding-left: 30%;
-  padding-right: 30%;
+  padding-right: 5%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.battle-deck-wrapper {
+  flex-basis: 70%;
+}
+
+.deck-statistics {
+  flex-basis: 25%;
+  margin-top: 4%;
 }
 
 .battle-deck {
