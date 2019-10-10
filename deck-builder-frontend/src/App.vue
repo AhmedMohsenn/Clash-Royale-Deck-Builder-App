@@ -13,14 +13,14 @@
 
     <div class="deck-statistics">
       <h6 class="distribution-label">Average Elixir Cost</h6>
-      <b-progress height="1.3rem"
+      <b-progress height="2rem"
                   :value="getAverageElixirCost"
                   :max="getMaxCardByElixir"
                   :precision="1"
                   show-value></b-progress>
 
       <h6 class="distribution-label">Minimum Cycle Cost </h6>
-      <b-progress height="1.3rem"
+      <b-progress height="2rem"
                   :value="getMinCycleCost"
                   :max="getMaxCardByElixir * 4"
                   show-value></b-progress>
@@ -244,7 +244,7 @@ export default {
 }
 
 .deck-statistics {
-  flex-basis: 40%;
+  flex-basis: 45%;
   margin-top: 4%;
 }
 
@@ -281,6 +281,7 @@ export default {
 
 .distribution-label {
   font-size: 0.9rem;
+  margin-top: 0.6rem;
 }
 </style>
 
