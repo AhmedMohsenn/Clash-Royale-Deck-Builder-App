@@ -41,4 +41,10 @@ export default {
   margin-top: 2%;
   border: none;
 }
+
+.cards-wrapper >>> .card__elixir {
+  width: 30px;
+  height: 30px;
+  line-height: 28px;
+}
 </style>

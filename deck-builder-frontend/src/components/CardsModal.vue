@@ -79,4 +79,11 @@ export default {
   margin-right: 1rem;
   margin-top: 1rem;
 }
+
+.cards-wrapper >>> .card__elixir {
+  font-size: 0.8rem;
+  line-height: 20px;
+  width: 20px;
+  height: 20px;
+}
 </style>

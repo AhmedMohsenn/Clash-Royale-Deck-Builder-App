@@ -109,8 +109,8 @@ export default {
   background-color: #e960ec;
   border-radius: 50%;
   text-align: center;
-  width: 35px;
-  height: 35px;
+  width: 100%;
+  height: 100%;
   line-height: 33px;
 }
 

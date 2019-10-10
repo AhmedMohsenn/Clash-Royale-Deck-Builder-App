@@ -8,7 +8,7 @@ export class API {
   getApiPath() {
     var apiPath = null;
     const servers = {
-      localhost: "http://www.clashapi.xyz/",
+      localhost: "http://localhost:1992/",
       prod: ""
     };
 
