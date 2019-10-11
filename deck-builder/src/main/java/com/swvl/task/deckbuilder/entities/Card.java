@@ -1,25 +1,77 @@
 package com.swvl.task.deckbuilder.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "card")
 public class Card {
 
-	private String _id;
-	private String idName;
-	private String rarity;
-	private String type;
-	private String name;
-	private String description;
-	private int elixirCost;
-	private int copyId;
-	private int arena;
-	private int order;
-	private int __v;
-
-	public String get_id() {
-		return _id;
+	@Override
+	public String toString() {
+		return "Card [id=" + id + ", clashId=" + clashId + ", idName=" + idName + ", rarity=" + rarity + ", type=" + type + ", name=" + name
+				+ ", description=" + description + ", elixirCost=" + elixirCost + "]";
 	}
 
-	public void set_id(String _id) {
-		this._id = _id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+
+	@NotNull
+	@Column(unique = true)
+	private String clashId;
+
+	@NotNull
+	@Column(unique = true)
+	private String idName;
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	private CardRarity rarity;
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	private CardType type;
+
+	@NotNull
+	@Column(unique = true)
+	private String name;
+
+	private String description;
+
+	@NotNull
+	private int elixirCost;
+
+	public Card(@NotNull String clashId, @NotNull String idName, @NotNull String name, @NotNull String description, @NotNull int elixirCost) {
+		this.clashId = clashId;
+		this.idName = idName;
+		this.name = name;
+		this.description = description;
+		this.elixirCost = elixirCost;
+	}
+
+	public Card() {
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getClashId() {
+		return clashId;
+	}
+
+	public void setClashId(String clashId) {
+		this.clashId = clashId;
 	}
 
 	public String getIdName() {
@@ -30,19 +82,19 @@ public class Card {
 		this.idName = idName;
 	}
 
-	public String getRarity() {
+	public CardRarity getRarity() {
 		return rarity;
 	}
 
-	public void setRarity(String rarity) {
+	public void setRarity(CardRarity rarity) {
 		this.rarity = rarity;
 	}
 
-	public String getType() {
+	public CardType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(CardType type) {
 		this.type = type;
 	}
 
@@ -68,38 +120,6 @@ public class Card {
 
 	public void setElixirCost(int elixirCost) {
 		this.elixirCost = elixirCost;
-	}
-
-	public int getCopyId() {
-		return copyId;
-	}
-
-	public void setCopyId(int copyId) {
-		this.copyId = copyId;
-	}
-
-	public int getArena() {
-		return arena;
-	}
-
-	public void setArena(int arena) {
-		this.arena = arena;
-	}
-
-	public int getOrder() {
-		return order;
-	}
-
-	public void setOrder(int order) {
-		this.order = order;
-	}
-
-	public int get__v() {
-		return __v;
-	}
-
-	public void set__v(int __v) {
-		this.__v = __v;
 	}
 
 }

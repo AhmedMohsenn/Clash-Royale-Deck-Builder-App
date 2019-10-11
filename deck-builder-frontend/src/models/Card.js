@@ -1,7 +1,6 @@
 export class Card {
   constructor(card = null) {
     if (card) {
-      this._arena = card.arena;
       this._description = card.description;
       this._elixirCost = card.elixirCost;
       this._idName = card.idName;
@@ -12,9 +11,6 @@ export class Card {
     }
   }
 
-  get area() {
-    return this._arena;
-  }
   get description() {
     return this._description;
   }
