@@ -18,3 +18,13 @@ then run:
 ```
 npm run serve
 ```
+
+
+# Design decisions and choices
+
+I used Vue.js for the frontend because it's a lightweight progressive framework and it's component based which makes the code more manageable.  
+
+I used Spring Boot because I'm more familiar with Java and Spring.  
+
+I used H2database because it's in memory so it's so fast and is suitable for small projects.
+
