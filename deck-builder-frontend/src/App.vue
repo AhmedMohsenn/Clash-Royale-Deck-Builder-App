@@ -5,7 +5,9 @@
       <battle-deck :data="battleDeck"
                    @select-mode="openCardsCollection($event)"
                    @remove-mode="removeCardFromBattleDeck($event)"
-                   @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)" />
+                   @generate-random-deck="generateRandomDeck(cardsCollection, deckCardsMaxCount)"
+                   @share-battle-deck="showShareBattleDeckModal(battleDeck)" />
+      <hr>
 
       <card-collection :data="cardsCollection" />
 
@@ -18,12 +20,24 @@
     <cards-modal :show-collections="showCardsModal"
                  :cards="cardsCollection"
                  :cards-rarities="cardsRarities"
-                 @use-card="useCard($event)"
+                 @use-card="useCard($event, currentBattleDeckSlotIdx)"
                  @hide-collections-modal="showCardsModal = false" />
+
+    <b-modal id="share-battle-deck-modal"
+             title="Battle Deck Link"
+             @show="sharedLink = getShareBattleDeckLink(battleDeck)"
+             hide-footer>
+
+      <b-form-textarea type="url"
+                       max-rows="3"
+                       v-model="sharedLink"
+                       readonly></b-form-textarea>
+    </b-modal>
   </div>
 </template>
 
 <script>
+const cardsQueryParamName = "cards";
 import { Card } from "@/models/Card.js";
 import CardService from "@/services/Card.js";
 import CardsModal from "@/components/CardsModal.vue";
@@ -46,7 +60,9 @@ export default {
       battleDeck: [],
       deckCardsMaxCount: 8,
       showCardsModal: false,
-      currentBattleDeckSlotIdx: null
+      currentBattleDeckSlotIdx: null,
+      sharedLink: null,
+      cardsQueryParamValue: this.$route.query[cardsQueryParamName]
     };
   },
 
@@ -62,6 +78,14 @@ export default {
       }
     },
 
+    loadSharedBattleDeck: function(cardsCollection) {
+      const idNames = this.cardsQueryParamValue.split(",");
+      for (let idx = 0; idx < idNames.length; idx++) {
+        const currentCard = this.getCardByIdName(cardsCollection, idNames[idx]);
+        this.useCard(currentCard, idx);
+      }
+    },
+
     initializeCardsCollection: function() {
       CardService.getAllCards()
         .then(response => {
@@ -69,6 +93,9 @@ export default {
         })
         .then(cardsCollection => {
           this.cardsRarities = this.getCardsRarities(cardsCollection);
+          if (this.cardsQueryParamValue) {
+            this.loadSharedBattleDeck(cardsCollection);
+          }
         })
         .catch(error => {
           console.error(error);
@@ -85,6 +112,10 @@ export default {
       return cardsRarities;
     },
 
+    getCardByIdName: function(cards, idName) {
+      return cards.find(c => c.idName === idName);
+    },
+
     resetBattleDeck: function() {
       for (const card of this.battleDeck) {
         if (card) this.cardsCollection.push(card);
@@ -94,13 +125,14 @@ export default {
 
     generateRandomDeck: function(cardsCollection, deckCardsCount) {
       this.resetBattleDeck();
-      while (this.battleDeck.length < deckCardsCount) {
+      let idx = 0;
+      while (idx < deckCardsCount) {
         const randomIdx = Math.floor(Math.random() * cardsCollection.length);
         const currentCard = cardsCollection[randomIdx];
         const found = this.battleDeck.find(d => d.id === currentCard.id);
         if (!found) {
-          this.battleDeck.push(currentCard);
-          cardsCollection.splice(randomIdx, 1);
+          this.useCard(currentCard, idx);
+          idx++;
         }
       }
     },
@@ -110,20 +142,32 @@ export default {
       this.showCardsModal = true;
     },
 
-    useCard(chosenCard) {
-      this.$set(this.battleDeck, this.currentBattleDeckSlotIdx, chosenCard);
+    useCard(chosenCard, cardSlotIdx) {
+      this.$set(this.battleDeck, cardSlotIdx, chosenCard);
       this.removeCardFromCardCollection(chosenCard);
       this.showCardsModal = false;
     },
 
     removeCardFromCardCollection: function(card) {
-      this.cardsCollection = this.cardsCollection.filter(c => c.id !== card.id);
+      this.cardsCollection = this.cardsCollection.filter(c => c.idName !== card.idName);
     },
 
     removeCardFromBattleDeck: function(cardIdx) {
       const currentCard = this.battleDeck[cardIdx];
       this.$set(this.battleDeck, cardIdx, null);
       this.cardsCollection.push(currentCard);
+    },
+
+    showShareBattleDeckModal: function() {
+      this.$bvModal.show("share-battle-deck-modal");
+    },
+
+    getShareBattleDeckLink: function(battleDeck) {
+      const hostPath = `${window.location.host}/#/`;
+      let idNames = battleDeck.reduce((acc, card) => acc + card.idName + ",", "");
+      idNames = idNames.substring(0, idNames.length - 1);
+      let sharedLink = `${hostPath}?${cardsQueryParamName}=${idNames}`;
+      return sharedLink;
     }
   }
 };

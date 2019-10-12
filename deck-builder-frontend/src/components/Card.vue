@@ -23,10 +23,13 @@
     <b-button-group vertical
                     class="action-btns">
       <b-button v-if="events.includes('moreInfo')"
+                variant="primary"
                 v-b-modal="'info-modal' + card.id">Info</b-button>
       <b-button @click="emitEvent('remove-mode')"
+                variant="danger"
                 v-if="events.includes('remove')">Remove</b-button>
       <b-button v-if="events.includes('upgrade')"
+                variant="success"
                 v-b-tooltip.hover
                 title="Not implemented">Upgrade</b-button>
     </b-button-group>
