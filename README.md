@@ -1,6 +1,6 @@
 # Clash-Royale-Deck-Builder-App
 
-First of all the following ports should be free(8080, 1992).  
+First of all please make sure that the following ports are free(8080, 1992).  
 
 ## Start the Backend
 navigate to the backend project and run the following command:
