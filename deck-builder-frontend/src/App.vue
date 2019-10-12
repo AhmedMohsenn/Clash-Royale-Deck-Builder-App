@@ -126,6 +126,7 @@ export default {
     generateRandomDeck: function(cardsCollection, deckCardsCount) {
       this.resetBattleDeck();
       let idx = 0;
+      if (!cardsCollection.length) return;
       while (idx < deckCardsCount) {
         const randomIdx = Math.floor(Math.random() * cardsCollection.length);
         const currentCard = cardsCollection[randomIdx];
