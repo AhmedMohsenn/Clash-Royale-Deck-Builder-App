@@ -22,11 +22,44 @@
 
     <b-button-group vertical
                     class="action-btns">
-      <b-button v-if="events.includes('moreInfo')">Info</b-button>
+      <b-button v-if="events.includes('moreInfo')"
+                v-b-modal="'info-modal' + card.id">Info</b-button>
       <b-button @click="emitEvent('remove-mode')"
                 v-if="events.includes('remove')">Remove</b-button>
-      <b-button v-if="events.includes('upgrade')">Upgrade</b-button>
+      <b-button v-if="events.includes('upgrade')"
+                v-b-tooltip.hover
+                title="Not implemented">Upgrade</b-button>
     </b-button-group>
+
+    <b-modal v-if="card"
+             :id="'info-modal'+card.id"
+             :title="card.name"
+             hide-footer>
+      <div class="modal-body">
+        <img class="modal-body__image"
+             :src="getCardImage(card)"
+             alt="card image">
+        <div class="modal-body__info">
+          <p class="card-description">{{card.description}}</p>
+          <hr>
+          <div class="card-info">
+            <label>Type: </label>
+            <p>{{card.type}}</p>
+          </div>
+
+          <div class="card-info">
+            <label>Rarity: </label>
+            <p>{{card.rarity}}</p>
+          </div>
+
+          <div class="card-info">
+            <label>Elixir Cost: </label>
+            <p>{{card.elixirCost}}</p>
+          </div>
+
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -140,5 +173,35 @@ export default {
 .action-btns > button {
   margin: 0;
   font-size: 0.9rem;
+}
+
+.modal-body {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.modal-body__image {
+  flex-basis: 20%;
+  width: 20%;
+  height: 20%;
+}
+
+.modal-body__info {
+  flex-basis: 75%;
+  font-size: 0.9rem;
+}
+
+.card-info > * {
+  display: inline-block;
+}
+
+.card-description {
+  font-weight: 600;
+}
+
+.card-info > p {
+  font-weight: 600;
+  margin-left: 1%;
 }
 </style>
