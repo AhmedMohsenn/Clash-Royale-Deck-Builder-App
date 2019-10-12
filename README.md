@@ -4,14 +4,13 @@ First of all please make sure that the following ports are free(8080, 1992).
 You will need to install JDK 1.8 at least , Apach Maven and NPM.
 
 ## Start the Backend
-navigate to the backend project and run the following command:
+Navigate to the backend project and run the following command:
 ```
 mvn spring-boot:run
 ```
 
 ## Start the Frontend
-
-first install node modules by running the following command:
+Navigate to frontend project then first install node modules by running the following command:
 ```
 npm install
 ```
