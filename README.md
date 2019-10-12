@@ -1,6 +1,6 @@
 # Clash-Royale-Deck-Builder-App
 
-First of all please make sure that the following ports are free(8080, 1992). 
+First of all please make sure that the following ports are free(8080, 1992).  
 You will need to install JDK 1.8 at least , Apach Maven and NPM.
 
 ## Start the Backend
